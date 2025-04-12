@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>频道列表</title>
+</head>
+<body>
+    <h1>频道列表</h1>
+    <h2>欢迎，{{ session.username }}</h2>
+    <a href="{{ url_for('logout') }}">注销</a>
+    <form method="post" action="{{ url_for('create_channel') }}">
+        <label for="channel_name">创建频道:</label>
+        <input type="text" id="channel_name" name="channel_name" required>
+        <input type="submit" value="创建">
+    </form>
+    <ul>
+        {% for channel in channels %}
+            <li><a href="{{ url_for('channel', channel_id=channel[0]) }}">{{ channel[1] }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>    
