@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ channel[1] }}</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var channel_id = {{ channel[0] }};
+
+        socket.emit('join', {'channel_id': channel_id});
+
+        window.onbeforeunload = function() {
+            socket.emit('leave', {'channel_id': channel_id});
+        };
+
+        socket.on('message', function(data) {
+            var item = document.createElement('li');
+            item.textContent = data.user + ': ' + data.message;
+            document.getElementById('messages').appendChild(item);
+        });
+
+        function sendMessage() {
+            var input = document.getElementById('input');
+            var message = input.value;
+            if (message) {
+                socket.emit('message', {'channel_id': channel_id, 'message': message});
+                input.value = '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>{{ channel[1] }}</h1>
+    <a href="{{ url_for('channels') }}">返回频道列表</a>
+    <ul id="messages">
+        {% for message in messages %}
+            <li>{{ message[0] }}: {{ message[1] }}</li>
+        {% endfor %}
+    </ul>
+    <input type="text" id="input" placeholder="输入消息">
+    <button onclick="sendMessage()">发送</button>
+</body>
+</html>    
