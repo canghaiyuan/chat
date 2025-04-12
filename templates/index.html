@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多人聊天</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        // 监听消息事件
+        socket.on('message', function(msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            document.getElementById('messages').appendChild(item);
+        });
+
+        function sendMessage() {
+            var input = document.getElementById('input');
+            var message = input.value;
+            if (message) {
+                socket.send(message);
+                input.value = '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <input type="text" id="input" placeholder="输入消息">
+    <button onclick="sendMessage()">发送</button>
+</body>
+</html>
